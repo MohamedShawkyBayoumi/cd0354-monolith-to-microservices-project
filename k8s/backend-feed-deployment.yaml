@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-feed
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend-feed
+  template:
+    metadata:
+      labels:
+        app: backend-feed
+    spec:
+      containers:
+        - name: backend-feed
+          image: mohamedshawkybayoumi/udagram-api-feed:v6
+          ports:
+            - containerPort: 8080
+          env:
+            - name: URL
+              value: "http://reverseproxy:8080"
+          envFrom:
+            - secretRef:
+                name: env-secret
+            - configMapRef:
+                name: env-configmap
+          resources:
+            limits:
+              cpu: 200m
+            requests:
+              cpu: 100m
